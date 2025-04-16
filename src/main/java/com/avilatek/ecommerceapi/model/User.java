@@ -1,17 +1,19 @@
-package com.avilatek.ecommerceapi.User;
+package com.avilatek.ecommerceapi.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.UUID;
 
 @Entity
 @Table(name="users")
 @Getter
 @Setter
-public class UserModel {
+public class User {
     @Id
     @UuidGenerator
     private UUID id;
@@ -30,4 +32,10 @@ public class UserModel {
 
     @Column(nullable = false, updatable = false)
     private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+            CascadeType.REFRESH })
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> roles = new HashSet<>();
 }
